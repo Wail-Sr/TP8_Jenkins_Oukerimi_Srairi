@@ -23,7 +23,7 @@ pipeline {
 
     stage('Code Analysis') {
       steps {
-        withSonarQubeEnv('SonarQube') {
+        withSonarQubeEnv('sonar') {
           bat 'gradle sonarqube'
         }
         waitForQualityGate abortPipeline: true
