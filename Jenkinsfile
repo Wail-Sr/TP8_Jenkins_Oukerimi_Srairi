@@ -23,7 +23,9 @@ pipeline {
 
     stage('Code Analysis') {
       steps {
-        bat 'gradle sonarqube'
+        withSonarQubeEnv('SonarQube') {
+          bat 'gradle sonarqube'
+        }
         waitForQualityGate abortPipeline: true
         mail(subject: 'La phase Code Analysis', body: 'Quality gate failed', to: 'ia_srairi@esi.z', cc: 'ia_srairi@esi.dz')
       }
