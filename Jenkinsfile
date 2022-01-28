@@ -24,8 +24,10 @@ pipeline {
     stage('Code Analysis') {
       steps {
         bat 'gradle sonarqube'
-        waitForQualityGate true
-        mail(subject: 'La phase Code Analysis', body: 'Quality gate failed', to: 'ia_srairi@esi.z', cc: 'ia_srairi@esi.dz')
+        qualitygate = waitForQualityGate
+        if (qualitygate.status != "OK") {
+           mail(subject: 'La phase Code Analysis', body: 'Quality gate failed', to: 'ia_srairi@esi.z', cc: 'ia_srairi@esi.dz')
+        }
       }
     }
 
