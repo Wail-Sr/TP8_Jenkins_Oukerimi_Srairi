@@ -26,8 +26,14 @@ pipeline {
         withSonarQubeEnv('sonar') {
           bat 'gradle sonarqube'
         }
-        waitForQualityGate true
-        mail(subject: 'La phase Code Analysis', body: 'Quality gate failed', to: 'ia_srairi@esi.z', cc: 'ia_srairi@esi.dz')
+        waitForQualityGate abortPipeline: true
+      }
+
+      post {
+        failure {
+          mail(subject: 'La phase Code Analysis', body: 'Quality gate failed', to: 'ia_srairi@esi.dz', cc: 'ia_srairi@esi.dz')
+        }
+
       }
     }
 
