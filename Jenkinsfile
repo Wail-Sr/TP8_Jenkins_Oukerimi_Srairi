@@ -22,18 +22,24 @@ pipeline {
     }
 
     stage('Code Analysis') {
-      steps {
-        withSonarQubeEnv('sonar') {
-          bat 'gradle sonarqube'
-        }
-        waitForQualityGate abortPipeline: true
-      }
-
       post {
         failure {
           mail(subject: 'La phase Code Analysis', body: 'Quality gate failed', to: 'ia_srairi@esi.dz', cc: 'ia_srairi@esi.dz')
         }
 
+      }
+      steps {
+        withSonarQubeEnv('sonar') {
+          bat 'gradle sonarqube'
+        }
+
+        waitForQualityGate true
+      }
+    }
+
+    stage('Test reporting') {
+      steps {
+        cucumber 'target/report.json'
       }
     }
 
