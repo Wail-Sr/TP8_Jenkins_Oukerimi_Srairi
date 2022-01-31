@@ -22,30 +22,41 @@ pipeline {
     }
 
     stage('Code Analysis') {
-      post {
-        failure {
-          mail(subject: 'La phase Code Analysis', body: 'Quality gate failed', to: 'ia_srairi@esi.dz', cc: 'ia_srairi@esi.dz')
+      parallel {
+        stage('Code Analysis') {
+          post {
+            failure {
+              mail(subject: 'La phase Code Analysis', body: 'Quality gate failed', to: 'ia_srairi@esi.dz', cc: 'ia_srairi@esi.dz')
+            }
+
+          }
+          steps {
+            withSonarQubeEnv('sonar') {
+              bat 'gradle sonarqube'
+            }
+
+            waitForQualityGate true
+          }
         }
 
-      }
-      steps {
-        withSonarQubeEnv('sonar') {
-          bat 'gradle sonarqube'
+        stage('Test Reporting') {
+          steps {
+            cucumber 'target/*.json'
+          }
         }
 
-        waitForQualityGate true
-      }
-    }
-
-    stage('Test reporting') {
-      steps {
-        cucumber 'target/report.json'
       }
     }
 
     stage('Deployment') {
       steps {
         bat 'gradle publish'
+      }
+    }
+
+    stage('Slack Notification') {
+      steps {
+        slackSend(message: 'Pipeline exécuté avec success', baseUrl: 'https://hooks.slack.com/services/', token: 'T02RAEXDQ8L/B02V1KWH95M/TrsQYZ92B6NZFm9JZ1gfhjUu', channel: '#général', username: 'OGL')
       }
     }
 
