@@ -56,7 +56,7 @@ pipeline {
 
     stage('Slack Notification') {
       steps {
-        slackSend(message: 'Pipeline execute avec success', baseUrl: 'https://hooks.slack.com/services/', token: 'T02RAEXDQ8L/B02V1KWH95M/TrsQYZ92B6NZFm9JZ1gfhjUu', channel: '#tp8', username: 'OGL')
+        slackSend(message: 'Pipeline execute avec success', baseUrl: 'https://hooks.slack.com/services/', token: 'T02RAEXDQ8L/B030T1XHSS2/wN1ZTTipNAeiyqu0pdUx8UoQ', channel: '#tp8', username: 'OGL')
       }
     }
 
